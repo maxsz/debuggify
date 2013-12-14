@@ -1,4 +1,4 @@
-Debug Macros for Objective-c
+Debug Macros for Objective-C
 ============================
 
 Debuggify is a collection of shortcut macros for quickly adding debugging output
@@ -76,5 +76,6 @@ Please report any issues to the GitHub issuetracker.
 ## Thanks
 Thank you to Jake Wharton for the inspiration by creating something
 [similiar](https://github.com/JakeWharton/hugo) (but way more advanced) for
-Java.
-
+Java. I would also like to thank Justin Spahr-Summers for creating the awesome
+[libextobjc](https://github.com/jspahrsummers/libextobjc) from which I am using
+the macros for metaprogramming.
