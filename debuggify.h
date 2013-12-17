@@ -11,7 +11,10 @@
 #if defined(DEBUG)
 #define debuggify(...) \
         autoreleasepool{} \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wunused\"") \
     NSDate *__debuggify__start = [NSDate date]; \
+    _Pragma("clang diagnostic pop") \
     NSLog(@"%s: ", __FUNCTION__); \
     metamacro_foreach(ext_debuggify_,, __VA_ARGS__)
 #define ext_debuggify_(INDEX, VAR) \
