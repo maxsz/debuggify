@@ -8,29 +8,68 @@
 #ifndef MXDEBUGGIFY_debuggify_h
 #define MXDEBUGGIFY_debuggify_h
 
+#define MX_LOG_EMERG   0
+#define MX_LOG_ALERT   1
+#define MX_LOG_CRIT    2
+#define MX_LOG_ERR     3
+#define MX_LOG_WARNING 4
+#define MX_LOG_NOTICE  5
+#define MX_LOG_INFO    6
+#define MX_LOG_DEBUG   7
+
+#ifndef MX_COMPILE_TIME_LOG_LEVEL
+  #ifdef NDEBUG
+    #define MX_COMPILE_TIME_LOG_LEVEL MX_LOG_NOTICE
+  #else
+    #define MX_COMPILE_TIME_LOG_LEVEL MX_LOG_DEBUG
+  #endif
+#endif
+
+static inline void MXLog (int level, NSString *format, ...)
+{
+  if (level > MX_COMPILE_TIME_LOG_LEVEL)
+    return;
+
+  va_list args;
+  va_start(args, format);
+  NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
+  NSLog(@"%@", message);
+  va_end(args);
+}
+
+#define MXLogEmergency(...) MXLog(MX_LOG_EMERG, __VA_ARGS__)
+#define MXLogAlert(...)     MXLog(MX_LOG_EMERG, __VA_ARGS__)
+#define MXLogCritical(...)  MXLog(MX_LOG_EMERG, __VA_ARGS__)
+#define MXLogError(...)     MXLog(MX_LOG_EMERG, __VA_ARGS__)
+#define MXLogWarning(...)   MXLog(MX_LOG_EMERG, __VA_ARGS__)
+#define MXLogNotice(...)    MXLog(MX_LOG_EMERG, __VA_ARGS__)
+#define MXLogInfo(...)      MXLog(MX_LOG_EMERG, __VA_ARGS__)
+#define MXLogDebug(...)     MXLog(MX_LOG_EMERG, __VA_ARGS__)
+
+
 #if defined(DEBUG)
 #define debuggify(...) \
-        autoreleasepool{} \
-    _Pragma("clang diagnostic push") \
-    _Pragma("clang diagnostic ignored \"-Wunused\"") \
-    NSDate *__debuggify__start = [NSDate date]; \
-    _Pragma("clang diagnostic pop") \
-    NSLog(@"%s: ", __FUNCTION__); \
-    metamacro_foreach(ext_debuggify_,, __VA_ARGS__)
+  autoreleasepool{} \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Wunused\"") \
+  NSDate *__debuggify__start = [NSDate date]; \
+  _Pragma("clang diagnostic pop") \
+  MXLogDebug(@"%s: ", __FUNCTION__); \
+  metamacro_foreach(ext_debuggify_,, __VA_ARGS__)
 #define ext_debuggify_(INDEX, VAR) \
-        if (VAR) NSLog(@"\t\t%i: %s = %@", INDEX, #VAR, VAR);
+  if (VAR) MXLogDebug(@"\t\t%i: %s = %@", INDEX, #VAR, VAR);
 #define debuggify_time \
-        autoreleasepool{} \
-    NSDate *__debuggify__end = [NSDate date]; \
-    NSTimeInterval __debuggify__executionTime; \
-    __debuggify__executionTime = [__debuggify__end \
-        timeIntervalSinceDate:__debuggify__start]; \
-    NSLog(@"Execution time: %fms", __debuggify__executionTime);
+  autoreleasepool{} \
+  NSDate *__debuggify__end = [NSDate date]; \
+  NSTimeInterval __debuggify__executionTime; \
+  __debuggify__executionTime = [__debuggify__end \
+  timeIntervalSinceDate:__debuggify__start]; \
+  MXLogDebug(@"Execution time: %fms", __debuggify__executionTime);
 #else
 #define debuggify(...) \
-        autoreleasepool{}
+  autoreleasepool{}
 #define debuggify_time() \
-        autoreleasepool{}
+  autoreleasepool{}
 #endif
 
 /**** Define metamacro_foreach, taken from libextobjc ****/

@@ -15,7 +15,6 @@ Just add the @debuggify() macro at the beginning of the method you want to debug
 and pass it any interesting objects you want to log. Optionally add
 @debuggify_time at the end to print the time it took to execute the method.
 
-
 ```objective-c
 @interface SomeClass
 @property NSString *someState;
@@ -64,6 +63,24 @@ sc.someState = @"I'm doing something else!";
 > Execution time: 10.001630ms
 ```
 
+## Logging
+Debuggify includes some very basic logging functions for replacing the standard
+NSLog.
+
+```objective-c
+MXLogEmergency(...)
+MXLogAlert(...)
+MXLogCritical(...)
+MXLogError(...)
+MXLogWarning(...)
+MXLogNotice(...)
+MXLogInfo(...)
+MXLogDebug(...)
+```
+
+The default (compile-time) log level is set to notice for non-debug builds and
+to the highest level (debug) for debug builds.
+
 ## Contributions
 Pull requests are very welcome. It would be nice to make this thing more
 advanced. One particular thing would be to add support for method paramters.
@@ -78,4 +95,6 @@ Thank you to Jake Wharton for the inspiration by creating something
 [similiar](https://github.com/JakeWharton/hugo) (but way more advanced) for
 Java. I would also like to thank Justin Spahr-Summers for creating the awesome
 [libextobjc](https://github.com/jspahrsummers/libextobjc) from which I am using
-the macros for metaprogramming.
+the macros for metaprogramming. Thanks to David Beck for creating
+[TULogging](https://github.com/davbeck/TULogging), which is used (with some
+modifications) for the debuggify logging facilities.
